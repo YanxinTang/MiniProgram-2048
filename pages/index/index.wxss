@@ -1,0 +1,36 @@
+#game{
+  width: 300px;
+  height: 300px;
+  padding: 10px 0 0 10px;
+  position: relative;
+  background: #bbada0;
+  border-radius: 10px;
+}
+#grids-wrapper .grid-row {
+  margin-bottom: 10px;
+}
+#grids-wrapper .grid-row:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+#grids-wrapper .grid{
+  width: 65px;
+  height: 65px;
+  margin-right: 10px;
+  float: left;
+  background: #e5dacf;
+  border-radius: 5px;
+}
+#tiles-wrapper{
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.tile{
+  margin: 7.5px;
+  position: absolute;
+  transition: all .1s ease-in-out;
+  will-change: transform;
+}
+

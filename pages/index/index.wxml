@@ -1,0 +1,44 @@
+<view class='container'>
+  <view id='game'
+    catch:touchstart="touch"
+    catch:touchmove="touch"
+    catch:touchend="touch"
+    >
+    <view id='grids-wrapper'>
+      <view class='grid-row'>
+        <view class='grid'></view>
+        <view class='grid'></view>
+        <view class='grid'></view>
+        <view class='grid'></view>
+      </view>
+      <view class='grid-row'>
+        <view class='grid'></view>
+        <view class='grid'></view>
+        <view class='grid'></view>
+        <view class='grid'></view>
+      </view>
+      <view class='grid-row'>
+        <view class='grid'></view>
+        <view class='grid'></view>
+        <view class='grid'></view>
+        <view class='grid'></view>
+      </view>
+      <view class='grid-row'>
+        <view class='grid'></view>
+        <view class='grid'></view>
+        <view class='grid'></view>
+        <view class='grid'></view>
+      </view>
+    </view>
+    <view id='tiles-wrapper'>
+      <tile wx:for="{{tiles}}"
+        wx:key="id"
+        value="{{item.value}}"
+        position="{{item.position}}"
+        newer="{{item.newer}}"
+        merge="{{item.merge}}"
+        >
+      </tile>
+    </view>
+  </view>
+</view>
