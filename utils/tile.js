@@ -1,11 +1,15 @@
 export default class{
 
-  constructor(id, v, p){
-    this.id = id;
-    this.value = v;
-    this.position = p;
-    this.merge = false;
-    this.newer = true;
+  constructor(init){
+    this.id = init.id;
+    this.value = init.value;
+    this.position = init.position;
+    this.merge = init.merge || false;
+    this.newer = init.newer || true;
   }
 
+  clean(){
+    this.merge = false;
+    this.newer = false;
+  }
 }

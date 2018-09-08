@@ -8,25 +8,30 @@ export default class{
     this._index = 0;
     this.trash = [];
   }
+  set index(value){
+    this._index = value;
+  }
   get index(){
     return this._index++;
   }
   init() {
     let container = new Array(this.size).fill(new Array(this.size).fill(null));
     container = container.map(row => row.map(e => null));
-    console.log(container)
     return container;
   }
 
   genTile(){
     const x = parseInt(Math.random() * 40 / 10);
     const y = parseInt(Math.random() * 40 / 10);
-    const key = parseInt(Math.random() * 20 / 10);
-
+    const key = Math.random()<0.7?this.base[0]:this.base[1];
     if (this.container[y][x] !== null) {
       return this.genTile();
     }
-    const newer = new Tile(this.index, this.base[key], { x, y });
+    const newer = new Tile({
+      id: this.index,
+      value: key,
+      position: { x, y }
+    });
     this.container[y][x] = newer;
   }
   getTile(position) {
@@ -74,4 +79,5 @@ export default class{
     tile = null;
     
   }
+  
 }

@@ -2,21 +2,58 @@ import Grid from './grid.js'
 import Tile from './tile.js'
 
 export default class{
-  constructor(){
-    this.base = [2, 4];
+  constructor(oldRecode){
+    this.base = [1, 2];
     this.size = 4;
     this.grid = new Grid(this.size, this.base);
+
     // this.events();
+    this.start(oldRecode);
   }
 
-  start(){
-    this.grid.genTile();
-    
-  }
+  start(oldRecode){
+    if (oldRecode){
+      // 存在旧的数据
+      this.score = oldRecode.score;
+      this.best = oldRecode.best;
+      this.won = false;
+      this.over = oldRecode.over;
+      let tile;
+      try{
+        for (let tileJson of oldRecode.tiles) {
+          tile = new Tile(JSON.parse(tileJson));
+          this.grid.insertTile(tile);
+        }
+        this.grid.index = tile.id + 1;
+        this.tiles = this.getTiles();
+      }catch(e){
 
-  events(){
-
+      }
+    }else{
+      this.score = 0;
+      this.best = 0;
+      this.won = false;
+      this.over = false;
+      this.tiles = [];
+      this.addStartTiles();
+      this.tiles = this.getTiles();
+    }
   }
+  startNewGame(){
+    this.score = 0;
+    this.won = false;
+    this.over = false;
+    this.grid = new Grid(this.size, this.base);
+    this.grid.index = 0;
+    this.addStartTiles();
+    this.tiles = this.getTiles();
+  }
+  addStartTiles(){
+    for(let i = 0; i < 2; i++){
+      this.grid.genTile()
+    }
+  }
+  
   buildTraversals(vector) {
     const traversals = { x: [], y: [] };
     for (let i = 0; i < this.size; i++) {
@@ -27,8 +64,8 @@ export default class{
     if (vector.y === 1) traversals.y = traversals.y.reverse();
     return traversals;
   }
+
   control(direction) {
-    console.log(direction);
     this.grid.trash = [];
     const vector = this.getVector(direction);
     const traversals = this.buildTraversals(vector);
@@ -39,19 +76,24 @@ export default class{
         [x, y] = [traversals.x[i], traversals.y[j]];
         let tile = this.grid.container[y][x];
         if (tile) {
-          tile.merge = false;
-          tile.newer = false;
+          tile.clean()
 
           let trans = this.getNextPosition(tile.position, vector);
           let target = this.grid.getTile(trans.next);
 
           if (target && !target.merge && tile.value === target.value) {
-            let merged = new Tile(this.grid.index, tile.value * 2, trans.next);
+            let merged = new Tile({
+              id: this.grid.index,
+              value: tile.value * 2,
+              position: trans.next
+            });
             merged.merge = true;
             this.grid.insertTile(merged);
+
+            this.score += merged.value;
+            this.score>this.best && (this.best = this.score);
+
             this.grid.remove(tile);
-            // this.grid.remove(target);
-            // this.grid.coverTo(tile, target.position);
             tile.position = target.position;
             this.grid.trash.push(tile, target);
             canGenTile = true;
@@ -61,14 +103,15 @@ export default class{
               canGenTile = true;
             }
           }
-
         }
       }
     }
     if (canGenTile) {
       this.grid.genTile();
-    } else {
-      console.log('failed')
+      this.tiles = this.getTiles();
+    }
+    if(!this.hasFree() && !this.canMerge()){
+      this.over = true;
     }
   }
 
@@ -91,18 +134,20 @@ export default class{
 
     return vectors.get(direction);
   }
-  tiles(){
-    
+  getAvaliableTiles(){
     let result = [];
-    for (let row of this.grid.container){
-      for(let item of row){
+    for (let row of this.grid.container) {
+      for (let item of row) {
         if (item !== null) {
           result.push(item);
         }
       }
     }
-    result = [...result, ...this.grid.trash];
-    console.log(result, this.grid.trash);
+    return result;
+  }
+  getTiles(){
+    let result;
+    result = [...this.getAvaliableTiles(), ...this.grid.trash];
     result.sort(function(a, b){
       if(a.id<b.id){
         return -1;
@@ -112,6 +157,41 @@ export default class{
         return 1;
       }
     });
+
     return result;
+  }
+  serializeTiles(){
+    let serialize  = [];
+    for(let tile of this.tiles){
+      serialize.push(JSON.stringify(tile));
+    }
+    return serialize;
+  }
+
+  hasFree(){
+    return this.getAvaliableTiles().length !== this.size * this.size;
+  }
+
+  canMerge(){
+    let canMerge = false;
+    for (let i = 0; i < this.size; i++) {
+      for (let j = 0; j < this.size; j++) {
+        let tile = this.grid.container[i][j];
+        if(tile){
+          for(let k = 0; k < 4; k++){
+            let vector = this.getVector(k);
+            let nextTile = this.grid.getTile({
+              x: tile.position.x + vector.x,
+              y: tile.position.y + vector.y
+            });
+
+            if(nextTile && tile.value === nextTile.value){
+              canMerge = true;
+            }
+          }
+        }
+      }
+    }
+    return canMerge;
   }
 }

@@ -1,5 +1,5 @@
 <!--component/tile/tile.wxml-->
-<view class='tile tile-{{position.y}}-{{position.x}} {{ newer?"newer":""}} {{ merge?"merge":""}} tile-{{value>2048?"super":value}}'>
+<view class='tile tile-{{position.y}}-{{position.x}} {{ newer?"newer":""}} {{ merge?"merge":""}} tile-{{value>1024?"super":value}}'>
   <view class='inner'>
     {{ value }}
   </view>
