@@ -1,0 +1,14 @@
+<!--component/pattern/pattern.wxml-->
+<view 
+  class="pattern-wrapper {{ open ?'f':'closed'}}"
+  bind:tap="pageNavigateTo"
+  >
+  <view class='pattern-name'>{{ name }}</view>
+  <view class='pattern-score-wrapper'>
+    <view class='pattern-score'>{{ score }}</view>
+    <view class='pattern-best'>{{ best }}</view>
+  </view>
+  <view hidden="{{open ? true : false}}" class='closed'>
+    <text>暂未开放</text>
+  </view>
+</view>

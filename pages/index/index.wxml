@@ -1,65 +1,21 @@
 <view class='container'>
   <view class='header'>
     <view id='logo'>1024</view>
-    <view class='score-wrapper'>
-      <view class='score'>{{ score }}</view>
-      <view class='best'>{{ best }}</view>
-    </view>
   </view>
-  <view id='new-game-wrapper'>
-    <view class='new-game' bind:tap="startNewGame">重新开始</view>
-  </view>
-  <block wx:if="{{ notice }}">
-    <view class='notice-wrapper'>
-      <view class='notice'>本工具仅适用于锻炼计算能力</view>
-    </view>
-  </block>
-  
-  <view id='game'
-    catch:touchstart="touch"
-    catch:touchmove="touch"
-    catch:touchend="touch"
+  <view class='pattern-list'>
+    <pattern 
+      open="{{true}}"
+      name="单人模式"
+      score="{{ singleScore}}"
+      best="{{ singleBest}}"
+      url="/pages/game/game"
     >
-    <view id='grids-wrapper'>
-      <view class='grid-row'>
-        <view class='grid'></view>
-        <view class='grid'></view>
-        <view class='grid'></view>
-        <view class='grid'></view>
-      </view>
-      <view class='grid-row'>
-        <view class='grid'></view>
-        <view class='grid'></view>
-        <view class='grid'></view>
-        <view class='grid'></view>
-      </view>
-      <view class='grid-row'>
-        <view class='grid'></view>
-        <view class='grid'></view>
-        <view class='grid'></view>
-        <view class='grid'></view>
-      </view>
-      <view class='grid-row'>
-        <view class='grid'></view>
-        <view class='grid'></view>
-        <view class='grid'></view>
-        <view class='grid'></view>
-      </view>
-    </view>
-    <view id='tiles-wrapper'>
-      <tile wx:for="{{tiles}}"
-        wx:key="id"
-        value="{{item.value}}"
-        position="{{item.position}}"
-        newer="{{item.newer}}"
-        merge="{{item.merge}}"
-        >
-      </tile>
-    </view>
-    <view id='gameover' class="{{over ? 'show' : 'hidden'}}">
-      <view class='text-center'>不能移动啦，右上角重新开始吧</view>
-    </view>
-    
+    </pattern>
+    <pattern 
+      open="{{false}}"
+      name="多人模式"
+    >
+    </pattern>
   </view>
   <block wx:if="{{!auth}}">
     <view class='auth-container'>
